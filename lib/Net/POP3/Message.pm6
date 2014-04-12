@@ -46,3 +46,7 @@ method data {
     }
     return $!data;
 }
+
+method delete {
+    $.pop.raw.dele($.sid);
+}
