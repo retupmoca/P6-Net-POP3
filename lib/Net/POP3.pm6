@@ -1,6 +1,12 @@
 class Net::POP3;
 
 use Net::POP3::Raw;
+use Net::POP3::Simple;
+
+has $.server;
+has $.port;
+has $.debug;
+has $.socket-class;
 
 method new(:$server!, :$port = 110, :$raw, :$debug, :$socket-class = IO::Socket::INET){
     my role debug-connection {
@@ -15,7 +21,7 @@ method new(:$server!, :$port = 110, :$raw, :$debug, :$socket-class = IO::Socket:
             return $line;
         }
     };
-    my $self = self.bless();
+    my $self = self.bless(:$server, :$port, :$debug, :$socket-class);
     if $raw {
         $self does Net::POP3::Raw;
         if $debug {
@@ -25,7 +31,11 @@ method new(:$server!, :$port = 110, :$raw, :$debug, :$socket-class = IO::Socket:
         }
         $self.conn.input-line-separator = "\r\n";
     } else {
-        die "Simple mode NYI";
+        $self does Net::POP3::Simple;
+        my $started = $self.start;
+        unless $started {
+            return $started;
+        }
     }
     return $self;
 }
