@@ -1,6 +1,12 @@
 P6-Net-POP3
 ===========
 
+A pure-perl implementation of a POP3 client.
+
+SSL/STARTTLS is not currently suppored.
+
+## Example Usage ##
+
     ####
     # raw interface
     ####
@@ -33,4 +39,69 @@ P6-Net-POP3
     }
     $pop.quit;
 
-SSL/STARTTLS are not currently supported.
+## Simple mode methods ##
+
+Note that all of these methods should return a true value (or a valid false response,
+such as '0' from message-count) on success or a Failure object on failure.
+
+ -  `new(:$server!, :$port, :$debug, :$socket-class)`
+
+    Creates a new POP3 client and opens a connection to the server.
+
+    `$port` defaults to 110.
+
+    `$debug` will print the network traffic to $*ERR if set.
+
+    `$socket-class` allows you to use a class other than IO::Socket::INET for
+    network communication
+
+ -  `auth($username, $password)`
+
+    Authenticates with the server. Attempts APOP first, and if the server doesn't
+    support APOP or if the APOP login fails, will attempt a USER + PASS plain text
+    login.
+
+ -  `message-count()`
+
+    Returns the number of messages in your mailbox.
+
+ -  `get-message(:$sid, :$uid)`
+
+    Returns a Net::POP3::Message object that refers to the message with the specified
+    session id ($sid, the standard POP3 message number) or unique id ($uid, as returned
+    from UIDL. NYI)
+
+ -  `get-messages()`
+
+    Returns a list of Net::POP3::Message objects, one for each message in the current
+    mailstore.
+
+ -  `quit()`
+
+    Commits any message deletions and closes the connection to the server.
+
+### Net::POP3::Message Methods ###
+
+This class contains the actual message from the POP3 server.
+
+ -  `size()`
+
+    Returns the size of the message, in octets.
+
+ -  `uid()`
+
+    Returns the unique id of the message (as returned by UIDL)
+
+ -  `delete()`
+
+    Deletes this message from the POP3 server. Will not take effect until .quit is
+    called on the main object.
+
+ -  `data()`
+
+    Returns the raw email message as a string.
+
+ -  `mime()`
+
+    Returns the email message as an Email::MIME object. Note that this will fail
+    if Email::MIME is not installed.
