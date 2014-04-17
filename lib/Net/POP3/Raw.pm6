@@ -1,7 +1,6 @@
 role Net::POP3::Raw;
 
-#use Digest::MD5;
-use Net::POP3::MD5;
+use Digest;
 
 has $.conn is rw;
 has $!timestamp;
@@ -108,7 +107,6 @@ method apop-login($login, $pass) {
     unless $!timestamp {
         die "No timestamp found for APOP login - perhaps this server doesn't support APOP?";
     }
-    #my $digest = Digest::MD5.md5_hex($!timestamp ~ $pass);
-    my $digest = md5-hex($!timestamp ~ $pass);
+    my $digest = md5(($!timestamp ~ $pass).encode).list».fmt("%02x").join;
     return self.apop($login, $digest);
 }

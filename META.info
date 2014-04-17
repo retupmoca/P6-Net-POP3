@@ -3,7 +3,7 @@
     "version" : "1.0.0",
     "author" : "github:retupmoca",
     "description" : "Simple POP3 Client",
-    "depends" : [],
+    "depends" : [ "Digest" ],
     "provides" : {
         "Net::POP3" : "lib/Net/POP3.pm6"
     },
