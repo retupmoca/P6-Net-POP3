@@ -44,7 +44,7 @@ class POP3Socket {
 
 use Net::POP3;
 
-my $client = Net::POP3.new(:server('foo.com'), :port(25), :socket-class(POP3Socket));
+my $client = Net::POP3.new(:server('foo.com'), :port(25), :socket(POP3Socket));
 
 ok $client ~~ Net::POP3, "Client created";
 ok $client.auth("bar", "barpass"), "Successful auth";

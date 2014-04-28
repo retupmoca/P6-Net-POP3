@@ -6,9 +6,9 @@ use Net::POP3::Simple;
 has $.server;
 has $.port;
 has $.debug;
-has $.socket-class;
+has $.socket;
 
-method new(:$server!, :$port = 110, :$raw, :$debug, :$socket-class = IO::Socket::INET){
+method new(:$server!, :$port = 110, :$raw, :$debug, :$socket = IO::Socket::INET){
     my role debug-connection {
         method send($string){
             my $tmpline = $string.substr(0, *-2);
@@ -21,14 +21,11 @@ method new(:$server!, :$port = 110, :$raw, :$debug, :$socket-class = IO::Socket:
             return $line;
         }
     };
-    my $self = self.bless(:$server, :$port, :$debug, :$socket-class);
+    my $self = self.bless(:$server, :$port, :$debug, :$socket);
     if $raw {
         $self does Net::POP3::Raw;
-        if $debug {
-            $self.conn = $socket-class.new(:host($server), :$port) but debug-connection;
-        } else {
-            $self.conn = $socket-class.new(:host($server), :$port);
-        }
+        $self.conn = $socket.defined ?? $socket !! $socket.new(:host($server), :$port);
+        $self.conn = $self.conn but debug-connection if $debug;
         $self.conn.input-line-separator = "\r\n";
     } else {
         $self does Net::POP3::Simple;

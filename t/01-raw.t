@@ -40,7 +40,7 @@ use Net::POP3;
 
 ok True, "Module loaded";
 
-my $client = Net::POP3.new(:server('foo.com'), :port(25), :raw, :socket-class(POP3Socket));
+my $client = Net::POP3.new(:server('foo.com'), :port(25), :raw, :socket(POP3Socket));
 
 is $client.conn.host, 'foo.com', 'right server';
 is $client.conn.port, '25', 'right port';

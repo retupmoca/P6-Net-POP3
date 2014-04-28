@@ -44,7 +44,7 @@ SSL/STARTTLS is not currently suppored.
 Note that all of these methods should return a true value (or a valid false response,
 such as '0' from message-count) on success or a Failure object on failure.
 
- -  `new(:$server!, :$port, :$debug, :$socket-class)`
+ -  `new(:$server!, :$port, :$debug, :$socket)`
 
     Creates a new POP3 client and opens a connection to the server.
 
@@ -52,8 +52,9 @@ such as '0' from message-count) on success or a Failure object on failure.
 
     `$debug` will print the network traffic to $*ERR if set.
 
-    `$socket-class` allows you to use a class other than IO::Socket::INET for
-    network communication
+    `$socket` allows you to use a class other than IO::Socket::INET for
+    network communication. If you pass in a defined object, Net::POP3 will assume
+    it is an already connected socket.
 
  -  `auth($username, $password)`
 
