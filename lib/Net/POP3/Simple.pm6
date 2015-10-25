@@ -12,6 +12,8 @@ my class X::Net::POP3::NoMessageList is Exception { };
 
 method start {
     $.raw = self.new(:server($.server), :port($.port), :raw, :debug($.debug), :socket($.socket));
+    $.raw.switch-to-ssl() if $.ssl;
+
     my $greeting = $.raw.get-response;
     return fail(X::Net::POP3::BadGreeting.new) unless $greeting.substr(0,3) eq '+OK';
     return True;

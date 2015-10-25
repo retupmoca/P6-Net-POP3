@@ -1,6 +1,7 @@
 unit role Net::POP3::Raw;
 
 use Digest;
+use IO::Socket::SSL;
 
 has $.conn is rw;
 has $!timestamp;
@@ -46,6 +47,11 @@ method get-response(:$multiline) {
 method send($stuff, :$multiline-response) {
     $.conn.send($stuff ~ "\r\n");
     return self.get-response(:multiline($multiline-response));
+}
+
+method switch-to-ssl() {
+    $!conn = IO::Socket::SSL.new(:client-socket($.conn));
+    $!conn.input-line-separator = "\r\n";
 }
 
 method quit {
