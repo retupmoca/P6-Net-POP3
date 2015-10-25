@@ -54,6 +54,14 @@ method switch-to-ssl() {
     $!conn.input-line-separator = "\r\n";
 }
 
+method stls {
+    return self.send("STLS");
+}
+
+method capa {
+    return self.send("CAPA", :multiline-response);
+}
+
 method quit {
     return self.send("QUIT");
 }
